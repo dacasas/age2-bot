@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 
 // This is the token of the bot "Ha llegado Wallace"
-const token = 'ENV_TOKEN';
+const token = process.env.BOT_AGE_TOKEN;
 
 const path = './sounds/';
 const extension = '.mp3';
