@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 const bot = new Discord.Client();
 
 // This is the token of the bot "Ha llegado Wallace"
