@@ -7,29 +7,24 @@ const token = process.env.BOT_AGE_TOKEN;
 const path = './sounds/';
 const extension = '.mp3';
 
-const sayNumber = (voiceChannel, message) => {
+const sayNumber = (voiceChannel, content) => {
 	voiceChannel.join()
-		.then(connection => connection.play(path + message.content + extension))
+		.then(connection => connection.play(path + content + extension))
 		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
 };
 
-const checkChannelConnection = (voiceChannel, message) => {
-	if (!voiceChannel) {
-		message.channel.send("Tienes que estar en un canal de voz");
-		return false;
-    }
-	return true;
-};
-
-const checkNumber = message => +message.content;
+const isNumeric = content => !isNan(content);
 
 bot.on('message', message => {
-	if (checkNumber(message)) {
+  const content = message.content;
+	if (isNumeric(content)) {
 		const voiceChannel = message.member.voice.channel;
-		if (checkChannelConnection(voiceChannel, message)) {
-			sayNumber(voiceChannel, message);
-		}
+		if (voiceChannel) {
+			sayNumber(voiceChannel, content);
+		} else {
+      message.channel.send("Tienes que estar en un canal de voz");
+    }
 	}
-}).catch(error => console.log(`ERROR EN ON MESSAGE: ${error}`));
+});
 
 bot.login(token).catch(error => console.log(`ERROR EN LOGIN: ${error}`));
