@@ -10,7 +10,7 @@ const sayNumber = (voiceChannel, content) => {
 		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
 };
 
-const isNumeric = content => !isNan(content);
+const isNumeric = content => !isNaN(content);
 
 bot.on('message', message => {
   const content = message.content;
