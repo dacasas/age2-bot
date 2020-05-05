@@ -21,7 +21,7 @@ const checkChannelConnection = (voiceChannel, message) => {
 	return true;
 };
 
-const checkNumber = message => +message.content && +message.content < 43;
+const checkNumber = message => +message.content;
 
 bot.on('message', message => {
 	if (checkNumber(message)) {
@@ -32,4 +32,4 @@ bot.on('message', message => {
 	}
 });
 
-bot.login(token);
+bot.login(token).catch(() => console.log("Invalid token!"));
