@@ -4,12 +4,9 @@ const bot = new Discord.Client();
 // This is the token of the bot "Ha llegado Wallace"
 const token = process.env.BOT_AGE_TOKEN;
 
-const path = './sounds/';
-const extension = '.mp3';
-
 const sayNumber = (voiceChannel, content) => {
 	voiceChannel.join()
-		.then(connection => connection.play(path + content + extension))
+		.then(connection => connection.play(`./sounds/${content}.mp3`))
 		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
 };
 
