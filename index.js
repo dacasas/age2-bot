@@ -1,8 +1,8 @@
-import Discord from 'discord.js';
+const Discord = require('discord.js');
 const bot = new Discord.Client();
 
 // This is the token of the bot "Ha llegado Wallace"
-const token = 'NzA2MjM0OTI3MDQ5NDc0MTEw.Xq3Xxg.fpktfjCmpjW6_4YKBjzeEHCF8vg';
+const token = 'ENV_TOKEN';
 
 const path = './sounds/';
 const extension = '.mp3';
