@@ -16,11 +16,8 @@ bot.on('message', message => {
   const content = message.content;
 	if (isNumeric(content)) {
 		const voiceChannel = message.member.voice.channel;
-		if (voiceChannel) {
-			sayNumber(voiceChannel, content);
-		} else {
-      message.channel.send("Tienes que estar en un canal de voz");
-    }
+		if (voiceChannel) sayNumber(voiceChannel, content);
+		else message.channel.send("Tienes que estar en un canal de voz");
 	}
 });
 
