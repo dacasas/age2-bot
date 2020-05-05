@@ -10,7 +10,7 @@ const extension = '.mp3';
 const sayNumber = (voiceChannel, message) => {
 	voiceChannel.join()
 		.then(connection => connection.play(path + message.content + extension))
-		.catch(error => console.log(`ERROR CAPTURADO: ${error}`));
+		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
 };
 
 const checkChannelConnection = (voiceChannel, message) => {
@@ -30,6 +30,6 @@ bot.on('message', message => {
 			sayNumber(voiceChannel, message);
 		}
 	}
-});
+}).catch(error => console.log(`ERROR EN ON MESSAGE: ${error}`));
 
-bot.login(token).catch(() => console.log("Invalid token!"));
+bot.login(token).catch(error => console.log(`ERROR EN LOGIN: ${error}`));
