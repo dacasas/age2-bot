@@ -27,7 +27,7 @@ const handleL4d2Message = (voiceChannel, content) => {
   if (numberOfSounds) {
     const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
     voiceChannel.join()
-      .then(connection => connection.play(`./sounds/l4d2/infectedName/${number}.wav`))
+      .then(connection => connection.play(`./sounds/l4d2/${infectedName}/${number}.wav`))
       .catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
   }
 };
