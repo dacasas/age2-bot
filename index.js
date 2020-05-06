@@ -13,9 +13,9 @@ const L4D2_INFECTED = {
 };
 
 // This is the token of the bot "Ha llegado Wallace"
-const token = process.env.BOT_AGE_TOKEN;
+const token = "NzA2MjM0OTI3MDQ5NDc0MTEw.XrC-tQ.Zab8Bcr389WqwB05bxXe-VBKsG4";
 
-const handleNumericMessage = (voiceChannel, content, directory) => {
+const handleNumericMessage = (voiceChannel, content, directory) =>{
   voiceChannel.join()
 		.then(connection => connection.play(`./sounds/${directory}/${content}.mp3`))
 		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
@@ -34,7 +34,7 @@ const handleL4d2Message = (voiceChannel, content) => {
 
 const l4d2Message = content => content.match(/([a-zA-Z]*)/);
 const age2Message = content => isNumeric(content);
-const randomGamesMessage = content => content.starswith('0') && isNumeric(content.substring(1));
+const randomGamesMessage = content => content.startsWith('0') && isNumeric(content.substring(1));
 
 const isNumeric = content => !isNaN(content);
 
