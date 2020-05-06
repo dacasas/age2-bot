@@ -15,7 +15,7 @@ const L4D2_INFECTED = {
 // This is the token of the bot "Ha llegado Wallace"
 const token = process.env.BOT_AGE_TOKEN;
 
-const handleAge2Message = (voiceChannel, content, directory) => {
+const handleNumericMessage = (voiceChannel, content, directory) => {
   voiceChannel.join()
 		.then(connection => connection.play(`./sounds/${directory}/${content}.mp3`))
 		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
@@ -43,8 +43,8 @@ bot.on('message', message => {
 	if (isNumeric(content) || l4d2Message(content)) {
     const voiceChannel = message.member.voice.channel;
     if (voiceChannel) {
-      if (age2Message(content)) handleAge2Message(voiceChannel, content, 'age');
-      if (randomGamesMessage(content)) handleAge2Message(voiceChannel, content.substring(1), 'games');
+      if (age2Message(content)) handleNumericMessage(voiceChannel, content, 'age');
+      if (randomGamesMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'games');
       if (l4d2Message(content)) handleL4d2Message(voiceChannel, content);
     } else  {
       message.channel.send("Tienes que estar en un canal de voz");
