@@ -43,7 +43,7 @@ bot.on('message', message => {
 	if (isNumeric(content) || l4d2Message(content)) {
     const voiceChannel = message.member.voice.channel;
     if (voiceChannel) {
-      if (age2Message(content)) handleNumericMessage(voiceChannel, content, 'age');
+      if (age2Message(content)) handleNumericMessage(voiceChannel, content, 'age2');
       if (randomGamesMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'games');
       if (l4d2Message(content)) handleL4d2Message(voiceChannel, content);
     } else  {
