@@ -24,7 +24,7 @@ const handleAge2Message = (voiceChannel, content) => {
 const handleL4d2Message = (voiceChannel, content) => {
   const infectedName = l4d2Message(content);
   const numberOfSounds = L4D2_INFECTED[infectedName];
-  if (numberOfSounds) {
+  if (numberOfSounds != null) {
     const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
     voiceChannel.join()
       .then(connection => connection.play(`./sounds/l4d2/infectedName/${number}.wav`))
