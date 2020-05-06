@@ -44,7 +44,7 @@ bot.on('message', message => {
     const voiceChannel = message.member.voice.channel;
     if (voiceChannel) {
       if (age2Message(content)) handleAge2Message(voiceChannel, content, 'age');
-      if (age2Message(content)) handleAge2Message(voiceChannel, content, 'games');
+      if (randomGamesMessage(content)) handleAge2Message(voiceChannel, content.substring(1), 'games');
       if (l4d2Message(content)) handleL4d2Message(voiceChannel, content);
     } else  {
       message.channel.send("Tienes que estar en un canal de voz");
