@@ -13,7 +13,7 @@ const L4D2_INFECTED = {
 };
 
 // This is the token of the bot "Ha llegado Wallace"
-const token = "NzA2MjM0OTI3MDQ5NDc0MTEw.XrC-tQ.Zab8Bcr389WqwB05bxXe-VBKsG4";
+const token = process.env.BOT_AGE_TOKEN;;
 
 const handleNumericMessage = (voiceChannel, content, directory) =>{
   voiceChannel.join()
