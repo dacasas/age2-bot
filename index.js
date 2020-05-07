@@ -35,6 +35,7 @@ const handleL4d2Message = (voiceChannel, content) => {
 const l4d2Message = content => content.match(/([a-zA-Z]*)/);
 const age2Message = content => isNumeric(content);
 const randomGamesMessage = content => content.startsWith('0') && isNumeric(content.substring(1));
+const rickAndMortyMessage = content => content.startsWith('r') && isNumeric(content.substring(1));
 
 const isNumeric = content => !isNaN(content);
 
@@ -45,6 +46,7 @@ bot.on('message', message => {
     if (voiceChannel) {
       if (age2Message(content)) handleNumericMessage(voiceChannel, content, 'age2');
       if (randomGamesMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'games');
+      if (rickAndMortyMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'rick&morty');
       if (l4d2Message(content)) handleL4d2Message(voiceChannel, content);
     } else  {
       message.channel.send("Tienes que estar en un canal de voz");
