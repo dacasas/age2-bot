@@ -1,7 +1,10 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
-const L4D2_INFECTED = {
+const CHANNEL_FOR_BOT_COMMANDS = "bot-commands";
+const DEFAULT_SPECIFIC_DIRECTORY = "age2";
+
+const DIRS_NUM_OF_FILES = {
   boomer: 32,
   charger: 9,
   hunter: 21,
@@ -12,46 +15,56 @@ const L4D2_INFECTED = {
   witch: 13,
 };
 
-// This is the token of the bot "Ha llegado Wallace"
-const token = process.env.BOT_AGE_TOKEN;;
-
-const handleNumericMessage = (voiceChannel, content, directory) =>{
-  voiceChannel.join()
-		.then(connection => connection.play(`./sounds/${directory}/${content}.mp3`))
-		.catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
+// In an ideal world this should really count how many files are in the subdirectory
+const getNumberOfFilesInDirectory = (directory, subDirectory) => {
+  return DIRS_NUM_OF_FILES[subDirectory];
 };
 
-const handleL4d2Message = (voiceChannel, content) => {
-  const infectedName = l4d2Message(content)[0];
-  const numberOfSounds = L4D2_INFECTED[infectedName];
-  if (numberOfSounds) {
-    const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
-    voiceChannel.join()
-      .then(connection => connection.play(`./sounds/l4d2/${infectedName}/${number}.wav`))
-      .catch(error => console.log(`ERROR EN ON PLAY: ${error}`));
-  }
+const playSound = (voiceChannel, pathToSound) => {
+  voiceChannel.join().then(connection => connection.play(pathToSound));
 };
 
-const l4d2Message = content => content.match(/([a-zA-Z]*)/);
-const age2Message = content => isNumeric(content);
-const randomGamesMessage = content => content.startsWith('0') && isNumeric(content.substring(1));
-const rickAndMortyMessage = content => content.startsWith('r') && isNumeric(content.substring(1));
+// Play specific sound from directory
+const handleSpecificSound = (voiceChannel, directory, sound) => {
+  playSound(voiceChannel, `./sounds/${directory}/${sound}.mp3`);
+};
 
-const isNumeric = content => !isNaN(content);
+// Play random sound from directory/subDirectory/...
+const handleSubDirectoryRandom = (voiceChannel, directory, subDirectory) => {
+  const numberOfSounds = getNumberOfFilesInDirectory(directory, subDirectory);
+  const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
+  playSound(voiceChannel, `./sounds/${directory}/${subDirectory}/${number}.wav`);
+};
+
+const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
+const specificSound = content => content.match(/^([a-z]+) ([0-9]+)$/);
+const defaultSpecific = content => content.match(/^([0-9]+)$/);
 
 bot.on('message', message => {
+  if (message.channel.name != CHANNEL_FOR_BOT_COMMANDS) return;
+
+  const voiceChannel = message.member.voice.channel;
+  if (!voiceChannel) return;
+
   const content = message.content;
-	if (isNumeric(content) || l4d2Message(content)) {
-    const voiceChannel = message.member.voice.channel;
-    if (voiceChannel) {
-      if (age2Message(content)) handleNumericMessage(voiceChannel, content, 'age2');
-      if (randomGamesMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'games');
-      if (rickAndMortyMessage(content)) handleNumericMessage(voiceChannel, content.substring(1), 'rick&morty');
-      if (l4d2Message(content)) handleL4d2Message(voiceChannel, content);
-    } else  {
-      message.channel.send("Tienes que estar en un canal de voz");
-    }
-	}
+  const defaultSpecificMatch = defaultSpecific(content);
+  const specificSoundMatch = specificSound(content);
+  const subDirectoryMatch = subDirectoryRandom(content);
+
+  if (defaultSpecificMatch) {
+    handleSpecificSound(voiceChannel, DEFAULT_SPECIFIC_DIRECTORY, defaultSpecificMatch[1]);
+    return;
+  }
+
+  if (specificSoundMatch) {
+    handleSpecificSound(voiceChannel, specificSoundMatch[1], specificSoundMatch[2]);
+    return;
+  }
+
+  if (subDirectoryMatch) {
+    handleSubDirectoryRandom(voiceChannel, subDirectoryMatch[1], subDirectoryMatch[2]);
+    return;
+  }
 });
 
-bot.login(token).catch(error => console.log(`ERROR EN LOGIN: ${error}`));
+bot.login(process.env.BOT_AGE_TOKEN).catch(error => console.log(error));
