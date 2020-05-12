@@ -28,14 +28,14 @@ const playSound = (voiceChannel, pathToSound) => {
 
 // Play specific sound from directory
 const handleSpecificSound = (voiceChannel, directory, sound) => {
-  playSound(voiceChannel, `${BASE_URL}/${directory}/${sound}.mp3?${URL_FLAGS}`);
+  playSound(voiceChannel, `${BASE_URL}/${directory}/${sound}.mp3${URL_FLAGS}`);
 };
 
 // Play random sound from directory/subDirectory/...
 const handleSubDirectoryRandom = (voiceChannel, directory, subDirectory) => {
   const numberOfSounds = getNumberOfFilesInDirectory(directory, subDirectory);
   const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
-  playSound(voiceChannel, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav?${URL_FLAGS}`);
+  playSound(voiceChannel, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav${URL_FLAGS}`);
 };
 
 const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
@@ -66,6 +66,12 @@ bot.on('message', message => {
   if (subDirectoryMatch) {
     handleSubDirectoryRandom(voiceChannel, subDirectoryMatch[1], subDirectoryMatch[2]);
     return;
+  }
+
+  if (content === "sgc") {
+    playSound(
+      voiceChannel,
+      "https://storage.cloud.google.com/bot-ha-llegado-wallace-sounds/sounds/age2/10.mp3?authuser=2&supportedpurview=project");
   }
 });
 
