@@ -1,0 +1,3 @@
+export BOT_AGE_TOKEN="Discord token"
+export BASE_URL="bucket url"
+export URL_FLAGS=""

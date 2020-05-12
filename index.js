@@ -3,6 +3,8 @@ const bot = new Discord.Client();
 
 const CHANNEL_FOR_BOT_COMMANDS = "bot-commands";
 const DEFAULT_SPECIFIC_DIRECTORY = "age2";
+const BASE_URL = process.env.BASE_URL || "./sounds";
+const URL_FLAGS = process.env.URL_FLAGS || "";
 
 const DIRS_NUM_OF_FILES = {
   boomer: 32,
@@ -26,7 +28,7 @@ const playSound = (voiceChannel, pathToSound) => {
 
 // Play specific sound from directory
 const handleSpecificSound = (voiceChannel, directory, sound) => {
-  playSound(voiceChannel, `./sounds/${directory}/${sound}.mp3`);
+  playSound(voiceChannel, `${BASE_URL}/${directory}/${sound}.mp3?${URL_FLAGS}`);
 };
 
 // Play random sound from directory/subDirectory/...
