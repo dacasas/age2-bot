@@ -35,7 +35,7 @@ const handleSpecificSound = (voiceChannel, directory, sound) => {
 const handleSubDirectoryRandom = (voiceChannel, directory, subDirectory) => {
   const numberOfSounds = getNumberOfFilesInDirectory(directory, subDirectory);
   const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
-  playSound(voiceChannel, `./sounds/${directory}/${subDirectory}/${number}.wav`);
+  playSound(voiceChannel, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav?${URL_FLAGS}`);
 };
 
 const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
