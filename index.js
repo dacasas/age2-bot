@@ -14,10 +14,11 @@ const bot = new Client({
   ],
 });
 
-const CHANNEL_FOR_BOT_COMMANDS = "bot-commands";
-const DEFAULT_SPECIFIC_DIRECTORY = "age2";
-const BASE_URL = process.env.BASE_URL || "sounds";
-const URL_FLAGS = process.env.URL_FLAGS || "";
+const CHANNEL_FOR_BOT_COMMANDS = process.env.CHANNEL_FOR_BOT_COMMANDS || "bot-commands";
+const DEFAULT_SPECIFIC_DIRECTORY = process.env.DEFAULT_SPECIFIC_DIRECTORY || "age2";
+const USE_BUCKET = process.env.USE_GC_BUCKET == "true" || false;
+
+const BASE_URL = USE_BUCKET ? process.env.GC_BUCKET_BASE_URL : path.join(__dirname, "sounds");
 
 const DIRS_NUM_OF_FILES = {
   boomer: 32,
@@ -50,18 +51,18 @@ const playSound = (voice, pathToSound) => {
 
 // Play specific sound from directory
 const handleSpecificSound = (voice, directory, sound) => {
-  playSound(voice, path.join(__dirname, BASE_URL , directory, `${sound}.mp3${URL_FLAGS}`));
+  playSound(voice, path.join(BASE_URL, directory, `${sound}.mp3`));
 };
 
 // Play random sound from directory/subDirectory/...
 const handleSubDirectoryRandom = (voice, directory, subDirectory) => {
   const numberOfSounds = getNumberOfFilesInDirectory(directory, subDirectory);
   const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
-  playSound(voice, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav${URL_FLAGS}`);
+  playSound(voice, path.join(BASE_URL, directory, subDirectory, `${number}.wav`));
 };
 
 const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
-const specificSound = content => content.match(/^([a-z]+) ([0-9]+)$/);
+const specificSound = content => content.match(/^([a-z]+[0-9]?) ([0-9]+)$/);
 const defaultSpecific = content => content.match(/^([0-9]+)$/);
 
 bot.on(Events.MessageCreate, message => {
@@ -89,12 +90,6 @@ bot.on(Events.MessageCreate, message => {
     handleSubDirectoryRandom(voice, subDirectoryMatch[1], subDirectoryMatch[2]);
     return;
   }
-
-  if (content === "sgc") {
-    playSound(
-      voice,
-      "https://storage.cloud.google.com/bot-ha-llegado-wallace-sounds/sounds/age2/10.mp3?authuser=2&supportedpurview=project");
-  }
-});
+}).catch(error => console.log(error));
 
 bot.login(process.env.BOT_AGE_TOKEN).catch(error => console.log(error));
