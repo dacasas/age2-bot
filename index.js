@@ -1,11 +1,22 @@
-// Random comment to push.
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
+const path = require('path');
 
-const Discord = require('discord.js');
-const bot = new Discord.Client();
+const bot = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent,
+  ],
+  partials: [
+    Partials.Channel,
+  ],
+});
 
 const CHANNEL_FOR_BOT_COMMANDS = "bot-commands";
 const DEFAULT_SPECIFIC_DIRECTORY = "age2";
-const BASE_URL = process.env.BASE_URL || "./sounds";
+const BASE_URL = process.env.BASE_URL || "sounds";
 const URL_FLAGS = process.env.URL_FLAGS || "";
 
 const DIRS_NUM_OF_FILES = {
@@ -24,31 +35,40 @@ const getNumberOfFilesInDirectory = (directory, subDirectory) => {
   return DIRS_NUM_OF_FILES[subDirectory];
 };
 
-const playSound = (voiceChannel, pathToSound) => {
-  voiceChannel.join().then(connection => connection.play(pathToSound));
+const playSound = (voice, pathToSound) => {
+  const connection = joinVoiceChannel({
+    channelId: voice.channel.id,
+    guildId: voice.guild.id,
+    adapterCreator: voice.guild.voiceAdapterCreator,
+    selfDeaf: false,
+  });
+  const player = createAudioPlayer();
+  connection.subscribe(player);
+  resource = createAudioResource(pathToSound);
+  player.play(resource);
 };
 
 // Play specific sound from directory
-const handleSpecificSound = (voiceChannel, directory, sound) => {
-  playSound(voiceChannel, `${BASE_URL}/${directory}/${sound}.mp3${URL_FLAGS}`);
+const handleSpecificSound = (voice, directory, sound) => {
+  playSound(voice, path.join(__dirname, BASE_URL , directory, `${sound}.mp3${URL_FLAGS}`));
 };
 
 // Play random sound from directory/subDirectory/...
-const handleSubDirectoryRandom = (voiceChannel, directory, subDirectory) => {
+const handleSubDirectoryRandom = (voice, directory, subDirectory) => {
   const numberOfSounds = getNumberOfFilesInDirectory(directory, subDirectory);
   const number = Math.ceil(Math.random() * Math.floor(numberOfSounds));
-  playSound(voiceChannel, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav${URL_FLAGS}`);
+  playSound(voice, `${BASE_URL}/${directory}/${subDirectory}/${number}.wav${URL_FLAGS}`);
 };
 
 const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
 const specificSound = content => content.match(/^([a-z]+) ([0-9]+)$/);
 const defaultSpecific = content => content.match(/^([0-9]+)$/);
 
-bot.on('message', message => {
+bot.on(Events.MessageCreate, message => {
   if (message.channel.name != CHANNEL_FOR_BOT_COMMANDS) return;
 
-  const voiceChannel = message.member.voice.channel;
-  if (!voiceChannel) return;
+  const voice = message.member.voice;
+  if (!voice) return;
 
   const content = message.content;
   const defaultSpecificMatch = defaultSpecific(content);
@@ -56,23 +76,23 @@ bot.on('message', message => {
   const subDirectoryMatch = subDirectoryRandom(content);
 
   if (defaultSpecificMatch) {
-    handleSpecificSound(voiceChannel, DEFAULT_SPECIFIC_DIRECTORY, defaultSpecificMatch[1]);
+    handleSpecificSound(voice, DEFAULT_SPECIFIC_DIRECTORY, defaultSpecificMatch[1]);
     return;
   }
 
   if (specificSoundMatch) {
-    handleSpecificSound(voiceChannel, specificSoundMatch[1], specificSoundMatch[2]);
+    handleSpecificSound(voice, specificSoundMatch[1], specificSoundMatch[2]);
     return;
   }
 
   if (subDirectoryMatch) {
-    handleSubDirectoryRandom(voiceChannel, subDirectoryMatch[1], subDirectoryMatch[2]);
+    handleSubDirectoryRandom(voice, subDirectoryMatch[1], subDirectoryMatch[2]);
     return;
   }
 
   if (content === "sgc") {
     playSound(
-      voiceChannel,
+      voice,
       "https://storage.cloud.google.com/bot-ha-llegado-wallace-sounds/sounds/age2/10.mp3?authuser=2&supportedpurview=project");
   }
 });

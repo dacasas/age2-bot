@@ -1,7 +1,7 @@
 {
   "name": "age-bot",
   "engines": {
-    "node": "13.12"
+    "node": "22.X.X"
   },
   "version": "1.0.0",
   "description": "",
@@ -13,10 +13,12 @@
   "author": "Maik D Tyson",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
-    "discord.js": "^12.2.0",
-    "ffmpeg": "0.0.4",
-    "ffmpeg-static": "^4.2.0",
-    "opusscript": "0.0.7"
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.17.0",
+    "discord.js": "^14.15.2",
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.13",
+    "opusscript": "^0.1.1"
   }
 }
