@@ -9,9 +9,6 @@ const bot = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.MessageContent,
   ],
-  partials: [
-    Partials.Channel,
-  ],
 });
 
 const CHANNEL_FOR_BOT_COMMANDS = process.env.CHANNEL_FOR_BOT_COMMANDS || "bot-commands";
@@ -90,6 +87,6 @@ bot.on(Events.MessageCreate, message => {
     handleSubDirectoryRandom(voice, subDirectoryMatch[1], subDirectoryMatch[2]);
     return;
   }
-}).catch(error => console.log(error));
+});
 
 bot.login(process.env.BOT_AGE_TOKEN).catch(error => console.log(error));
