@@ -1,6 +1,9 @@
 const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const path = require('path');
+const OpenAI = require('openai');
+
+const openai = new OpenAI();
 
 const bot = new Client({
   intents: [
@@ -58,20 +61,35 @@ const handleSubDirectoryRandom = (voice, directory, subDirectory) => {
   playSound(voice, path.join(BASE_URL, directory, subDirectory, `${number}.wav`));
 };
 
+const sunTzuMatch = content => content.match(/^sunTzu (.+)$/);
 const subDirectoryRandom = content => content.match(/^([a-z]+) ([a-z]+)$/);
 const specificSound = content => content.match(/^([a-z]+[0-9]?) ([0-9]+)$/);
 const defaultSpecific = content => content.match(/^([0-9]+)$/);
 
-bot.on(Events.MessageCreate, message => {
+bot.on(Events.MessageCreate, async message => {
   if (message.channel.name != CHANNEL_FOR_BOT_COMMANDS) return;
 
   const voice = message.member.voice;
   if (!voice) return;
 
   const content = message.content;
+  const sunTzu = sunTzuMatch(content);
   const defaultSpecificMatch = defaultSpecific(content);
   const specificSoundMatch = specificSound(content);
   const subDirectoryMatch = subDirectoryRandom(content);
+
+  if (sunTzu) {
+    const completion = await openai.chat.completions.create({
+      messages: [
+          {"role": "system", "content": "You are Sun Tzu, the greatest military general and strategist of all time."},
+          {"role": "user", "content": sunTzu[1]},
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    message.channel.send(completion.choices[0].message);
+    return;
+  }
 
   if (defaultSpecificMatch) {
     handleSpecificSound(voice, DEFAULT_SPECIFIC_DIRECTORY, defaultSpecificMatch[1]);

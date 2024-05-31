@@ -3,3 +3,4 @@ export GC_BUCKET_BASE_URL="https://storage.googleapis.com/bot-ha-llegado-wallace
 export USE_GC_BUCKET=true
 export DEFAULT_SPECIFIC_DIRECTORY="age2"
 export CHANNEL_FOR_BOT_COMMANDS="bot-commands"
+export OPENAI_API_KEY="apikey"
